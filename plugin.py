@@ -550,6 +550,48 @@ class BasePlugin:
             Devices[iUnit].Update(nValue=0,sValue=str(sval))
            except Exception as e:
             Domoticz.Debug(str(e))
+         # Shelly 2.5 SENSOR type, not command->process
+     elif (len(mqttpath)>2) and (mqttpath[2] in ['temperature','overtemperature']) and ("shellyswitch25" in mqttpath[1]):
+          stype = mqttpath[2].strip().lower()
+          unitname = mqttpath[1]+"-"+stype
+          unitname = unitname.strip()
+          iUnit = -1
+          for Device in Devices:
+           try:
+            if (Devices[Device].DeviceID.strip() == unitname):
+             iUnit = Device
+             break
+           except:
+            pass
+          if iUnit<0: # if device does not exists in Domoticz, then create it
+            try:
+             iUnit = 0
+             for x in range(1,256):
+              if x not in Devices:
+               iUnit=x
+               break
+             if iUnit==0:
+              iUnit=len(Devices)+1
+             if stype == 'temperature':
+              typeName="Temperature"
+             else:
+              typeName="Alert"
+             Domoticz.Device(Name=unitname, Unit=iUnit, TypeName=typeName,Used=1,DeviceID=unitname).Create()
+            except Exception as e:
+             Domoticz.Debug(str(e))
+             return False
+          if stype=="temperature":
+           try:
+            sval = float(message)
+            Devices[iUnit].Update(nValue=0,sValue=str(sval))
+           except Exception as e:
+            Domoticz.Debug(str(e))
+          elif stype=="overtemperature":
+           try:
+            nval=int(message)
+            Devices[iUnit].Update(nValue=nval)
+           except Exception as e:
+            Domoticz.Debug(str(e))
          # RGB type, not command->process
          elif (len(mqttpath)>3) and ((mqttpath[2] == "color") or (mqttpath[2] == "white")) and ("/command" not in topic) and ("/set" not in topic):
           unitname = mqttpath[1]+"-"+mqttpath[3]
