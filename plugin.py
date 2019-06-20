@@ -551,7 +551,7 @@ class BasePlugin:
            except Exception as e:
             Domoticz.Debug(str(e))
          # Shelly 2.5 SENSOR type, not command->process
-     elif (len(mqttpath)>2) and (mqttpath[2] in ['temperature','overtemperature']) and ("shellyswitch25" in mqttpath[1]):
+         elif (len(mqttpath)>2) and (mqttpath[2] in ['temperature','overtemperature']) and ("shellyswitch25" in mqttpath[1]):
           stype = mqttpath[2].strip().lower()
           unitname = mqttpath[1]+"-"+stype
           unitname = unitname.strip()
