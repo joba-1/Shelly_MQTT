@@ -588,8 +588,8 @@ class BasePlugin:
             Domoticz.Debug(str(e))
           elif stype=="overtemperature":
            try:
-            nval=int(message)
-            Devices[iUnit].Update(nValue=nval)
+            sval=int(message)
+            Devices[iUnit].Update(nValue=0,sValue=str(sval))
            except Exception as e:
             Domoticz.Debug(str(e))
          # RGB type, not command->process
